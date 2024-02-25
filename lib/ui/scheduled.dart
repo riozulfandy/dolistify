@@ -27,7 +27,7 @@ class ScheduledPageState extends State<ScheduledPage> {
 
   @override
   Widget build(BuildContext context) {
-    DateTime _selectedDate = DateTime.now();
+    // DateTime _selectedDate = DateTime.now();
     return Container(
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -103,7 +103,7 @@ class ScheduledPageState extends State<ScheduledPage> {
               selectionColor: const Color.fromARGB(255, 2, 196, 124),
               onDateChange: (selectedDate) => {
                 setState(() {
-                  _selectedDate = selectedDate;
+                  // _selectedDate = selectedDate;
                 }),
               },
             ),
