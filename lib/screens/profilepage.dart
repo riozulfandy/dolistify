@@ -15,6 +15,7 @@ String name = '';
 String email = '';
 String gender = '';
 DateTime? birthdate;
+Image profileImage = Image.asset('assets/images/profile.png');
 
 class ProfilePageState extends State<ProfilePage> {
   @override
@@ -28,9 +29,9 @@ class ProfilePageState extends State<ProfilePage> {
           children: [
             Stack(
               children: [
-                const CircleAvatar(
+                CircleAvatar(
                   radius: 50,
-                  backgroundImage: AssetImage('assets/images/profile.png'),
+                  backgroundImage: profileImage.image,
                 ),
                 Positioned(
                   bottom: -10,

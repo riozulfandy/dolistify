@@ -47,9 +47,7 @@ class EditPofilePageState extends State<EditPofilePage> {
             child: const Text('Photo Gallery',
                 style: TextStyle(color: Color.fromARGB(255, 2, 196, 124))),
             onPressed: () {
-              // close the options modal
               Navigator.of(context).pop();
-              // get image from gallery
               selectImageGallery();
             },
           ),
@@ -57,9 +55,7 @@ class EditPofilePageState extends State<EditPofilePage> {
             child: const Text('Camera',
                 style: TextStyle(color: Color.fromARGB(255, 2, 196, 124))),
             onPressed: () {
-              // close the options modal
               Navigator.of(context).pop();
-              // get image from camera
               getImageFromCamera();
             },
           ),
@@ -84,6 +80,7 @@ class EditPofilePageState extends State<EditPofilePage> {
     name = _name;
     email = _email;
     gender = _gender;
+    profileImage = _image != null ? Image.file(_image!) : profileImage;
   }
 
   @override
@@ -106,16 +103,10 @@ class EditPofilePageState extends State<EditPofilePage> {
                 const SizedBox(height: 20),
                 Stack(
                   children: [
-                    _image != null
-                        ? CircleAvatar(
-                            radius: 50,
-                            backgroundImage: FileImage(_image!),
-                          )
-                        : const CircleAvatar(
-                            radius: 50,
-                            backgroundImage:
-                                AssetImage('assets/images/profile.png'),
-                          ),
+                    CircleAvatar(
+                      radius: 50,
+                      backgroundImage: profileImage.image,
+                    ),
                     Positioned(
                       bottom: -10,
                       left: 67,
