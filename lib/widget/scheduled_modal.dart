@@ -15,7 +15,8 @@ class DialogBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<String> _category = ["Work", "Education", "Life", "Sport", "Others"];
+    // ignore: unused_local_variable
+    List<String> category = ["Work", "Education", "Life", "Sport", "Others"];
     final formKey = GlobalKey<FormState>();
     return AlertDialog(
       title: Text(
@@ -69,7 +70,7 @@ class DialogBox extends StatelessWidget {
                     OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                 labelText: "Category",
               ),
-              items: _category
+              items: category
                   .map((e) => DropdownMenuItem(
                         value: e,
                         child: Row(
@@ -82,7 +83,7 @@ class DialogBox extends StatelessWidget {
                               "Others" => const Icon(Icons.more_horiz),
                               _ => const Icon(Icons.more_horiz),
                             },
-                            SizedBox(width: 5),
+                            const SizedBox(width: 5),
                             Text(e),
                           ],
                         ),
