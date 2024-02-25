@@ -94,11 +94,10 @@ class EditPofilePageState extends State<EditPofilePage> {
               children: [
                 Text(
                   name == "" ? "Create Profile" : "Edit Profile",
-                  style: TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
+                  style: const TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromARGB(255, 2, 196, 124)),
                 ),
                 const SizedBox(height: 20),
                 Stack(
@@ -221,10 +220,11 @@ class EditPofilePageState extends State<EditPofilePage> {
                           width: double.infinity,
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                            ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                backgroundColor:
+                                    const Color.fromARGB(255, 2, 196, 124)),
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
                                 saveProfile();

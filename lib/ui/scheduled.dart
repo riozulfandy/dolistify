@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class ScheduledPage extends StatefulWidget {
   const ScheduledPage({Key? key}) : super(key: key);
@@ -13,15 +14,16 @@ class ScheduledPageState extends State<ScheduledPage> {
     return Scaffold(
         body: Column(
       children: [
-        Container(
-          padding: const EdgeInsets.all(20),
-          child: const Text(
-            'Scheduled',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+        Row(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(DateFormat.yMMMMd().format(DateTime.now())),
+                const Text('Scheduled Page'),
+              ],
+            )
+          ],
         )
       ],
     ));

@@ -51,6 +51,7 @@ class BottomNavState extends State<BottomNav> {
           ];
 
     return Scaffold(
+      backgroundColor: Colors.grey.shade50,
       appBar: AppBar(
         elevation: 1,
         backgroundColor: Colors.white,
