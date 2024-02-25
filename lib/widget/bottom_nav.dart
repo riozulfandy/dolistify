@@ -55,13 +55,7 @@ class BottomNavState extends State<BottomNav> {
       appBar: AppBar(
         elevation: 1,
         backgroundColor: Colors.white,
-        leading: GestureDetector(
-            onTap: () {},
-            child: const Icon(
-              Icons.nightlight_round,
-              size: 24,
-              color: Color.fromARGB(255, 2, 196, 124),
-            )),
+        surfaceTintColor: Colors.white,
         title: SizedBox(
           width: double.infinity,
           height: 56,

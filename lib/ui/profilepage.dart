@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
 class ProfilePage extends StatefulWidget {
   final Function(int) onButtonPressed;
@@ -28,6 +30,15 @@ class ProfilePageState extends State<ProfilePage> {
             child: Center(
                 child: Column(
               children: [
+                Text(
+                  "Profile",
+                  style: GoogleFonts.poppins(
+                      textStyle: const TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromARGB(255, 2, 196, 124))),
+                ),
+                const SizedBox(height: 20),
                 Stack(
                   children: [
                     CircleAvatar(
@@ -96,11 +107,7 @@ class ProfilePageState extends State<ProfilePage> {
                     ),
                     const SizedBox(width: 5),
                     Text(
-                      birthdate.toString().split(' ')[0],
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey,
-                      ),
+                      DateFormat.yMMMMd().format(birthdate!),
                     ),
                   ],
                 ),
