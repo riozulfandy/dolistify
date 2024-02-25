@@ -21,7 +21,7 @@ jobs:
       - run: flutter test
 
   build_ios:
-    name: Build Flutter (iOS)
+    name: Build & Release Flutter (iOS)
     needs: [flutter_test]
     runs-on: macos-latest
     steps:
@@ -35,9 +35,15 @@ jobs:
       - run: flutter pub get
       - run: flutter clean
       - run: flutter build ios --release --no-codesign
+      - name: Push to Releases
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "build/ios/iphoneos/*.ipa"
+          tag: v1.0.${{ github.run_number }}
+          token: ${{ secrets.TOKEN }}
 
   build_appbundle:
-    name: Build Flutter (Android)
+    name: Build & Release Flutter (Android)
     needs: [flutter_test]
     runs-on: ubuntu-latest
     steps:
@@ -51,3 +57,9 @@ jobs:
       - run: flutter pub get
       - run: flutter clean
       - run: flutter build appbundle
+      - name: Push to Releases
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "build/app/outputs/apk/debug/*.apk"
+          tag: v1.0.${{ github.run_number }}
+          token: ${{ secrets.TOKEN }}
