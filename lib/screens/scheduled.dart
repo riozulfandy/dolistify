@@ -10,9 +10,9 @@ class ScheduledPage extends StatefulWidget {
 class ScheduledPageState extends State<ScheduledPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Center(
-        child: const Text('Welcome to the ScheduledPage Page!'),
+        child: Text('Welcome to the ScheduledPage Page!'),
       ),
     );
   }

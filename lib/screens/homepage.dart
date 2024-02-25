@@ -10,9 +10,9 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Center(
-        child: const Text('Welcome to the Home Page!'),
+        child: Text('Welcome to the Home Page!'),
       ),
     );
   }
