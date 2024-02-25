@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:dolistify/screens/profilepage.dart';
+import 'package:dolistify/ui/profilepage.dart';
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
 
@@ -105,7 +105,9 @@ class EditPofilePageState extends State<EditPofilePage> {
                   children: [
                     CircleAvatar(
                       radius: 50,
-                      backgroundImage: profileImage.image,
+                      backgroundImage: _image != null
+                          ? Image.file(_image!).image
+                          : profileImage.image,
                     ),
                     Positioned(
                       bottom: -10,
@@ -230,7 +232,8 @@ class EditPofilePageState extends State<EditPofilePage> {
                                 widget.onButtonPressed(2);
                               }
                             },
-                            child: const Text('Save'),
+                            child: const Text('Save',
+                                style: TextStyle(color: Colors.white)),
                           ),
                         ),
                       ],
