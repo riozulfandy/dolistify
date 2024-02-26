@@ -32,6 +32,10 @@ dependencies:
     sdk: flutter
   image_picker: ^1.0.7
   email_validator: '^2.1.16'
+  intl:
+  google_fonts:
+  date_picker_timeline:
+  hive:
 
 
   # The following adds the Cupertino Icons font to your application.

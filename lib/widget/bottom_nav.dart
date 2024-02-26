@@ -1,7 +1,7 @@
-import 'package:dolistify/screens/edit_profile.dart';
-import 'package:dolistify/screens/homepage.dart';
-import 'package:dolistify/screens/profilepage.dart';
-import 'package:dolistify/screens/scheduled.dart';
+import 'package:dolistify/ui/edit_profile.dart';
+import 'package:dolistify/ui/homepage.dart';
+import 'package:dolistify/ui/profilepage.dart';
+import 'package:dolistify/ui/scheduled.dart';
 import 'package:flutter/material.dart';
 
 class BottomNav extends StatefulWidget {
@@ -51,9 +51,11 @@ class BottomNavState extends State<BottomNav> {
           ];
 
     return Scaffold(
+      backgroundColor: Colors.grey.shade50,
       appBar: AppBar(
         elevation: 1,
         backgroundColor: Colors.white,
+        surfaceTintColor: Colors.white,
         title: SizedBox(
           width: double.infinity,
           height: 56,

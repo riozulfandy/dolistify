@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:dolistify/utils/bottom_nav.dart';
+import 'package:dolistify/widget/bottom_nav.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
