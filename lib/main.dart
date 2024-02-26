@@ -39,9 +39,10 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-          primarySwatch:
-              getMaterialColor(const Color.fromARGB(255, 2, 196, 124)),
-          focusColor: getMaterialColor(const Color.fromARGB(255, 2, 196, 124))),
+        colorScheme: ColorScheme.fromSwatch(
+            primarySwatch:
+                getMaterialColor(const Color.fromARGB(255, 2, 196, 124))),
+      ),
       home: const SplashScreen(),
     );
   }
