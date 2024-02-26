@@ -34,18 +34,22 @@ class DialogBox extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             TextFormField(
-              controller: controller,
-              decoration: InputDecoration(
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                labelText: "Task Name",
-              ),
+              onChanged: (String? value) {},
               validator: (String? value) {
                 if (value == null || value.isEmpty) {
-                  return "Task Name shouldn't be empty!";
+                  return "Name shouldn't be empty!";
                 }
                 return null;
               },
+              initialValue: "",
+              decoration: const InputDecoration(
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                labelText: "Task Name",
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                ),
+              ),
             ),
             const SizedBox(height: 10),
             TextFormField(
@@ -66,6 +70,8 @@ class DialogBox extends StatelessWidget {
             const SizedBox(height: 10),
             DropdownButtonFormField(
               decoration: InputDecoration(
+                contentPadding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                 border:
                     OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                 labelText: "Category",
@@ -96,6 +102,27 @@ class DialogBox extends StatelessWidget {
                 }
                 return null;
               },
+            ),
+            const SizedBox(height: 10),
+            TextFormField(
+              controller: controller,
+              validator: (String? value) {
+                if (value == null || value.isEmpty) {
+                  return "Date shouldn't be empty!";
+                }
+                return null;
+              },
+              decoration: const InputDecoration(
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                labelText: "Date",
+                prefixIcon: Icon(Icons.calendar_today),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                ),
+              ),
+              readOnly: true,
+              onTap: () {},
             ),
             const SizedBox(height: 10),
             Row(

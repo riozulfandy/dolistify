@@ -53,7 +53,7 @@ class BottomNavState extends State<BottomNav> {
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
       appBar: AppBar(
-        elevation: 1,
+        elevation: 2,
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.white,
         title: SizedBox(
