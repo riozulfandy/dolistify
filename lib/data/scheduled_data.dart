@@ -1,18 +1,24 @@
+import 'package:flutter/material.dart';
+
 class SceduledTasks {
   String title;
   String description;
   String category;
-  DateTime timeStarted;
-  DateTime timeEnded;
+  DateTime date;
+  TimeOfDay timeStarted;
+  TimeOfDay timeEnded;
+  DateTime reminder;
   bool isFinished;
 
   SceduledTasks({
     required this.title,
     required this.description,
     required this.category,
+    required this.date,
     required this.timeStarted,
     required this.timeEnded,
     required this.isFinished,
+    required this.reminder,
   });
 
   getTitle() {
@@ -51,11 +57,11 @@ class SceduledTasks {
     this.category = category;
   }
 
-  setTimeStarted(DateTime timeStarted) {
+  setTimeStarted(TimeOfDay timeStarted) {
     this.timeStarted = timeStarted;
   }
 
-  setTimeEnded(DateTime timeEnded) {
+  setTimeEnded(TimeOfDay timeEnded) {
     this.timeEnded = timeEnded;
   }
 

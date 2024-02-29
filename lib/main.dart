@@ -1,7 +1,10 @@
 import 'package:dolistify/ui/splashscreen.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/adapters.dart';
 
-main() {
+main() async {
+  await Hive.initFlutter();
+  await Hive.openBox('myBox');
   runApp(const MyApp());
 }
 

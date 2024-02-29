@@ -36,6 +36,8 @@ dependencies:
   google_fonts:
   date_picker_timeline:
   hive:
+  hive_flutter:
+  flutter_slidable:
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -52,6 +54,9 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+  hive_generator:
+  build_runner:
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

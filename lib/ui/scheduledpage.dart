@@ -1,5 +1,5 @@
 import 'package:date_picker_timeline/date_picker_timeline.dart';
-import 'package:dolistify/widget/scheduled_modal.dart';
+import 'package:dolistify/ui/edit_scheduled.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -13,22 +13,27 @@ class ScheduledPage extends StatefulWidget {
 
 class ScheduledPageState extends State<ScheduledPage> {
   void createNewTask() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return DialogBox(
-          controller: TextEditingController(),
-          onSave: () => Navigator.of(context).pop(),
-          onCancel: () => Navigator.of(context).pop(),
-        );
-      },
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        transitionDuration: const Duration(milliseconds: 300),
+        pageBuilder: (context, animation, secondaryAnimation) {
+          return SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(1.0, 0.0),
+              end: Offset.zero,
+            ).animate(animation),
+            child: const EditScheduled("Add Task"),
+          );
+        },
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     // DateTime _selectedDate = DateTime.now();
-    return Container(
+    return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(
         children: [
