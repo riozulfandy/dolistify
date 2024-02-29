@@ -274,7 +274,7 @@ class HomePageState extends State<HomePage> {
             ),
           ),
           Container(
-            height: MediaQuery.of(context).size.height - 540,
+            height: MediaQuery.of(context).size.height - 550,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               color: Colors.white,
