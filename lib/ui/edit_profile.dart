@@ -49,7 +49,11 @@ class EditPofilePageState extends State<EditPofilePage> {
         await ImagePicker().pickImage(source: ImageSource.gallery);
     final img = await imgpicked?.readAsBytes();
     setState(() {
-      _image = img;
+      if (img != null) {
+        _image = img;
+      } else {
+        _image = _image;
+      }
     });
   }
 

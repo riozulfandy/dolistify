@@ -7,8 +7,8 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       elevation: 2,
       backgroundColor: Colors.white,
+      surfaceTintColor: Colors.white,
       title: SizedBox(
-        width: double.infinity,
         height: 56,
         child: Image.asset('assets/images/appbar.png'),
       ),
