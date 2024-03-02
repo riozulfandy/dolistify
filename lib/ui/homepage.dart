@@ -168,7 +168,7 @@ class HomePageState extends State<HomePage> {
             ),
           ),
           Text(
-            'Welcome, ${profile.profileData.isEmpty ? '' : profile.profileData["name"]}',
+            'Welcome, ${profile.profileData.isEmpty ? '' : profile.profileData["name"].split(' ')[0]}',
             style: GoogleFonts.poppins(
               textStyle: const TextStyle(
                 fontSize: 25,
