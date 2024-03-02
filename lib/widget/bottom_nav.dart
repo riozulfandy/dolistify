@@ -1,8 +1,10 @@
 import 'package:dolistify/ui/edit_profile.dart';
 import 'package:dolistify/ui/homepage.dart';
 import 'package:dolistify/ui/profilepage.dart';
-import 'package:dolistify/ui/scheduled.dart';
+import 'package:dolistify/ui/scheduledpage.dart';
+import 'package:dolistify/widget/appbar.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class BottomNav extends StatefulWidget {
   const BottomNav({Key? key}) : super(key: key);
@@ -14,6 +16,7 @@ class BottomNav extends StatefulWidget {
 class BottomNavState extends State<BottomNav> {
   int _currentIndex = 0;
   bool _isEdit = false;
+  final _box = Hive.box('myBox');
 
   void _changeTab(int index) {
     setState(() {
@@ -29,12 +32,14 @@ class BottomNavState extends State<BottomNav> {
 
   @override
   Widget build(BuildContext context) {
-    if (name == "") {
+    if (_box.get("profileData") == null) {
       _isEdit = true;
     }
     var tabs = _isEdit
         ? [
-            const HomePage(),
+            HomePage(
+              moveTab: _changeTab,
+            ),
             const ScheduledPage(),
             EditPofilePage(
               onButtonPressed: _changeTab,
@@ -42,7 +47,9 @@ class BottomNavState extends State<BottomNav> {
             ),
           ]
         : [
-            const HomePage(),
+            HomePage(
+              moveTab: _changeTab,
+            ),
             const ScheduledPage(),
             ProfilePage(
               onButtonPressed: _changeTab,
@@ -52,16 +59,7 @@ class BottomNavState extends State<BottomNav> {
 
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
-      appBar: AppBar(
-        elevation: 1,
-        backgroundColor: Colors.white,
-        surfaceTintColor: Colors.white,
-        title: SizedBox(
-          width: double.infinity,
-          height: 56,
-          child: Image.asset('assets/images/appbar.png'),
-        ),
-      ),
+      appBar: const MyAppBar(),
       body: tabs[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: const Color.fromARGB(255, 2, 196, 124),

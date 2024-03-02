@@ -1,8 +1,14 @@
 import 'package:dolistify/ui/splashscreen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:hive_flutter/adapters.dart';
 
-main() {
-  runApp(const MyApp());
+main() async {
+  await Hive.initFlutter();
+  await Hive.openBox('myBox');
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((value) => runApp(const MyApp()));
 }
 
 MaterialColor getMaterialColor(Color color) {
