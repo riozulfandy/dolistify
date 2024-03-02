@@ -34,7 +34,6 @@ dependencies:
   email_validator: '^2.1.16'
   intl:
   google_fonts:
-  date_picker_timeline:
   hive:
   hive_flutter:
   flutter_slidable:

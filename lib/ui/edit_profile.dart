@@ -37,11 +37,11 @@ class EditPofilePageState extends State<EditPofilePage> {
     } else {
       profile.loadData();
     }
-    _name = profile.profileData[0];
-    _email = profile.profileData[1];
-    _gender = profile.profileData[2];
-    _birthdate = profile.profileData[3];
-    _image = profile.profileData[4];
+    _name = profile.profileData["name"];
+    _email = profile.profileData["email"];
+    _gender = profile.profileData["gender"];
+    _birthdate = profile.profileData["birthdate"];
+    _image = profile.profileData["profilepicture"];
   }
 
   void selectImageGallery() async {
@@ -96,11 +96,11 @@ class EditPofilePageState extends State<EditPofilePage> {
   }
 
   void saveProfile() async {
-    profile.profileData[0] = _name;
-    profile.profileData[1] = _email;
-    profile.profileData[2] = _gender;
-    profile.profileData[3] = _birthdate;
-    profile.profileData[4] = _image;
+    profile.profileData["name"] = _name;
+    profile.profileData["email"] = _email;
+    profile.profileData["gender"] = _gender;
+    profile.profileData["birthdate"] = _birthdate;
+    profile.profileData["profilepicture"] = _image;
     profile.updateData();
   }
 
@@ -298,6 +298,11 @@ class EditPofilePageState extends State<EditPofilePage> {
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           saveProfile();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Profile saved!"),
+                            ),
+                          );
                           widget.onEditProfile();
                           widget.onButtonPressed(2);
                         }

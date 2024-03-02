@@ -1,4 +1,6 @@
 import 'package:dolistify/data/profile_data.dart';
+import 'package:dolistify/data/scheduled_data.dart';
+import 'package:dolistify/data/scheduled_model.dart';
 import 'package:dolistify/data/todo_data.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -17,6 +19,8 @@ class HomePageState extends State<HomePage> {
   final _box = Hive.box('myBox');
   ToDoData toDoData = ToDoData();
   Profile profile = Profile();
+  ScheduledData scheduledData = ScheduledData();
+  ScheduledItem? nextSchedule;
 
   @override
   void initState() {
@@ -27,79 +31,123 @@ class HomePageState extends State<HomePage> {
     } else {
       toDoData.loadData();
     }
+    if (_box.get('scheduledOnDate') == null) {
+      scheduledData.initialData();
+      scheduledData.updateData();
+    } else {
+      scheduledData.loadData();
+    }
+    if (_box.get("profileData") == null) {
+      profile.initialData();
+    } else {
+      profile.loadData();
+    }
+    bool getFirst = false;
+    for (var schedule in scheduledData.scheduledOnDate[DateTime(
+        DateTime.now().year, DateTime.now().month, DateTime.now().day)]!) {
+      if (!getFirst &&
+          schedule.timeStarted.isAfter(DateTime.now()) &&
+          schedule.isDone == false) {
+        nextSchedule = schedule;
+        getFirst = true;
+      }
+      if (nextSchedule != null &&
+          schedule.timeStarted.isBefore(nextSchedule!.timeStarted) &&
+          schedule.isDone == false) {
+        nextSchedule = schedule;
+      }
+    }
   }
 
   void createToDo() {
+    final formKey = GlobalKey<FormState>();
     TextEditingController textFieldController = TextEditingController();
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          backgroundColor: Colors.grey.shade50,
-          surfaceTintColor: Colors.grey.shade50,
-          title: Text(
-            'New To Do',
-            style: GoogleFonts.robotoSlab(
-              textStyle: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black),
-            ),
-          ),
-          content: TextField(
-            controller: textFieldController,
-            decoration: InputDecoration(
-              hintText: "Enter To Do",
-              fillColor: Colors.white,
-              filled: true,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
+        return Form(
+          key: formKey,
+          child: AlertDialog(
+            backgroundColor: Colors.grey.shade50,
+            surfaceTintColor: Colors.grey.shade50,
+            title: Text(
+              'New To Do',
+              style: GoogleFonts.robotoSlab(
+                textStyle: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black),
               ),
             ),
-          ),
-          actions: <Widget>[
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
+            content: TextFormField(
+              controller: textFieldController,
+              decoration: InputDecoration(
+                hintText: "Enter To Do",
+                fillColor: Colors.white,
+                filled: true,
+                border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                backgroundColor: Colors.red,
               ),
-              child: const Text(
-                'Cancel',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                ),
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  toDoData.todoList.add([textFieldController.text, false]);
-                  toDoData.updateData();
-                });
-                Navigator.of(context).pop();
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return 'Please enter a task';
+                }
+                return null;
               },
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                backgroundColor: const Color.fromARGB(255, 2, 196, 124),
-              ),
-              child: const Text(
-                'Add',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                ),
-              ),
             ),
-          ],
-          actionsPadding: const EdgeInsets.only(right: 20, bottom: 20),
+            actions: <Widget>[
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  backgroundColor: Colors.red,
+                ),
+                child: const Text(
+                  'Cancel',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    if (formKey.currentState!.validate()) {
+                      toDoData.todoList.add([textFieldController.text, false]);
+                      toDoData.updateData();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('To Do Added'),
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
+                      Navigator.of(context).pop();
+                    }
+                  });
+                },
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  backgroundColor: const Color.fromARGB(255, 2, 196, 124),
+                ),
+                child: const Text(
+                  'Add',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+            ],
+            actionsPadding: const EdgeInsets.only(right: 20, bottom: 20),
+          ),
         );
       },
     );
@@ -120,7 +168,7 @@ class HomePageState extends State<HomePage> {
             ),
           ),
           Text(
-            'Welcome, ${profile.profileData.isEmpty ? '' : profile.profileData[0]}',
+            'Welcome, ${profile.profileData.isEmpty ? '' : profile.profileData["name"]}',
             style: GoogleFonts.poppins(
               textStyle: const TextStyle(
                 fontSize: 25,
@@ -232,14 +280,108 @@ class HomePageState extends State<HomePage> {
             ),
           ),
           Container(
-            height: 90,
+            padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               color: Colors.white,
               border: Border.all(
                 color: const Color.fromARGB(255, 2, 196, 124),
               ),
+              gradient: const LinearGradient(
+                colors: [
+                  Colors.white,
+                  Colors.white,
+                  Color.fromARGB(255, 163, 255, 201),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
             ),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              if (nextSchedule != null) ...[
+                Text(
+                  nextSchedule!.title,
+                  style: GoogleFonts.poppins(
+                    textStyle: const TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.access_time,
+                      color: Colors.black,
+                      size: 13,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      DateFormat.Hm().format(nextSchedule!.timeStarted),
+                      style: GoogleFonts.robotoSlab(
+                        textStyle: const TextStyle(
+                          fontSize: 13,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.alarm,
+                      color: Colors.black,
+                      size: 13,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      nextSchedule!.timeReminded == null
+                          ? "None"
+                          : nextSchedule!.timeReminded!
+                                      .difference(nextSchedule!.timeStarted)
+                                      .inMinutes ==
+                                  -5
+                              ? "5 minutes before"
+                              : nextSchedule!.timeReminded!
+                                          .difference(nextSchedule!.timeStarted)
+                                          .inMinutes ==
+                                      -15
+                                  ? "15 minutes before"
+                                  : nextSchedule!.timeReminded!
+                                              .difference(
+                                                  nextSchedule!.timeStarted)
+                                              .inMinutes ==
+                                          -30
+                                      ? "30 minutes before"
+                                      : "None",
+                      style: GoogleFonts.robotoSlab(
+                        textStyle: const TextStyle(
+                          fontSize: 13,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ] else ...[
+                Center(
+                  child: Text(
+                    'No Schedule',
+                    style: GoogleFonts.poppins(
+                      textStyle: const TextStyle(
+                        fontSize: 15,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ]),
           ),
           ListTile(
             leading: const Icon(
@@ -274,7 +416,7 @@ class HomePageState extends State<HomePage> {
             ),
           ),
           Container(
-            height: MediaQuery.of(context).size.height - 550,
+            height: MediaQuery.of(context).size.height - 563,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               color: Colors.white,
@@ -282,48 +424,60 @@ class HomePageState extends State<HomePage> {
                 color: const Color.fromARGB(255, 2, 196, 124),
               ),
             ),
-            child: ListView.separated(
-              itemCount: toDoData.todoList.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  leading: Checkbox(
-                    activeColor: const Color.fromARGB(255, 2, 196, 124),
-                    value: toDoData.todoList[index][1],
-                    onChanged: (value) {
-                      setState(() {
-                        toDoData.todoList[index][1] = value!;
-                        toDoData.updateData();
-                      });
+            child: toDoData.todoList.isNotEmpty
+                ? ListView.separated(
+                    itemCount: toDoData.todoList.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        leading: Checkbox(
+                          activeColor: const Color.fromARGB(255, 2, 196, 124),
+                          value: toDoData.todoList[index][1],
+                          onChanged: (value) {
+                            setState(() {
+                              toDoData.todoList[index][1] = value!;
+                              toDoData.updateData();
+                            });
+                          },
+                        ),
+                        trailing: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              toDoData.todoList.removeAt(index);
+                              toDoData.updateData();
+                            });
+                          },
+                          icon: const Icon(
+                            Icons.delete,
+                            color: Colors.red,
+                          ),
+                        ),
+                        title: Text(
+                          toDoData.todoList[index][0],
+                          style: TextStyle(
+                            decoration: toDoData.todoList[index][1]
+                                ? TextDecoration.lineThrough
+                                : TextDecoration.none,
+                          ),
+                        ),
+                      );
                     },
-                  ),
-                  trailing: IconButton(
-                    onPressed: () {
-                      setState(() {
-                        toDoData.todoList.removeAt(index);
-                        toDoData.updateData();
-                      });
+                    separatorBuilder: (context, index) {
+                      return const Divider(
+                        color: Colors.grey,
+                      );
                     },
-                    icon: const Icon(
-                      Icons.delete,
-                      color: Colors.red,
+                  )
+                : Center(
+                    child: Text(
+                      'No ToDo',
+                      style: GoogleFonts.poppins(
+                        textStyle: const TextStyle(
+                          fontSize: 15,
+                          color: Colors.black,
+                        ),
+                      ),
                     ),
                   ),
-                  title: Text(
-                    toDoData.todoList[index][0],
-                    style: TextStyle(
-                      decoration: toDoData.todoList[index][1]
-                          ? TextDecoration.lineThrough
-                          : TextDecoration.none,
-                    ),
-                  ),
-                );
-              },
-              separatorBuilder: (context, index) {
-                return const Divider(
-                  color: Colors.grey,
-                );
-              },
-            ),
           ),
         ],
       ),

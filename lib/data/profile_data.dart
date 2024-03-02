@@ -2,16 +2,16 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 class Profile {
   var box = Hive.box('myBox');
-  List profileData = [];
+  Map profileData = {};
 
   void initialData() {
-    profileData = [
-      "",
-      "",
-      "",
-      null,
-      null,
-    ]; //name, email, gender, birthdate, profilepicture
+    profileData = {
+      "name": "",
+      "email": "",
+      "gender": "",
+      "birthdate": null,
+      "profilepicture": null,
+    };
   }
 
   void loadData() {

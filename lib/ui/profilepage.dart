@@ -18,20 +18,20 @@ class ProfilePage extends StatefulWidget {
 
 class ProfilePageState extends State<ProfilePage> {
   Profile profile = Profile();
-  String name = "";
-  String email = "";
-  String gender = "";
-  DateTime? birthdate;
-  Uint8List? profileImage;
+  String _name = "";
+  String _email = "";
+  String _gender = "";
+  DateTime? _birthdate;
+  Uint8List? _profileImage;
   @override
   void initState() {
     super.initState();
     profile.loadData();
-    name = profile.profileData[0];
-    email = profile.profileData[1];
-    gender = profile.profileData[2];
-    birthdate = profile.profileData[3];
-    profileImage = profile.profileData[4];
+    _name = profile.profileData["name"];
+    _email = profile.profileData["email"];
+    _gender = profile.profileData["gender"];
+    _birthdate = profile.profileData["birthdate"];
+    _profileImage = profile.profileData["profilepicture"];
   }
 
   @override
@@ -55,8 +55,8 @@ class ProfilePageState extends State<ProfilePage> {
               children: [
                 CircleAvatar(
                   radius: 50,
-                  backgroundImage: profileImage != null
-                      ? Image.memory(profileImage!).image
+                  backgroundImage: _profileImage != null
+                      ? Image.memory(_profileImage!).image
                       : Image.asset("assets/images/profile.png").image,
                 ),
                 Positioned(
@@ -78,7 +78,7 @@ class ProfilePageState extends State<ProfilePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  name,
+                  _name,
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -86,8 +86,8 @@ class ProfilePageState extends State<ProfilePage> {
                 ),
                 const SizedBox(width: 5),
                 Icon(
-                  gender == 'Female' ? Icons.female : Icons.male,
-                  color: gender == 'Female'
+                  _gender == 'Female' ? Icons.female : Icons.male,
+                  color: _gender == 'Female'
                       ? const Color.fromARGB(255, 255, 97, 150)
                       : Colors.blue,
                 ),
@@ -103,7 +103,7 @@ class ProfilePageState extends State<ProfilePage> {
                 ),
                 const SizedBox(width: 5),
                 Text(
-                  email,
+                  _email,
                   style: const TextStyle(
                     fontSize: 16,
                     color: Colors.grey,
@@ -121,7 +121,7 @@ class ProfilePageState extends State<ProfilePage> {
                 ),
                 const SizedBox(width: 5),
                 Text(
-                  DateFormat.yMMMMd().format(birthdate!),
+                  DateFormat.yMMMMd().format(_birthdate!),
                 ),
               ],
             ),

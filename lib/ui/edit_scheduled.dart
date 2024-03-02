@@ -1,76 +1,107 @@
-// ignore_for_file: no_leading_underscores_for_local_identifiers, duplicate_ignore
-
+import 'package:dolistify/data/scheduled_data.dart';
+import 'package:dolistify/data/scheduled_model.dart';
 import 'package:dolistify/widget/appbar.dart';
-// ignore: unnecessary_import
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 class EditScheduled extends StatefulWidget {
-  final String title;
-  const EditScheduled(this.title, {Key? key}) : super(key: key);
+  final ScheduledItem? scheduledItem;
+  const EditScheduled({
+    Key? key,
+    this.scheduledItem,
+  }) : super(key: key);
   @override
   EditScheduledState createState() => EditScheduledState();
 }
 
 class EditScheduledState extends State<EditScheduled> {
   final _formKey = GlobalKey<FormState>();
+  String _title = "";
+  String _description = "";
+  DateTime _date = DateTime.now();
+  TimeOfDay _timestart = TimeOfDay.now();
+  String _cat = "Work";
+  String _remind = "None";
+  final ScheduledData _scheduledData = ScheduledData();
 
   @override
-  // ignore: duplicate_ignore, duplicate_ignore
+  void initState() {
+    super.initState();
+    _scheduledData.loadData();
+    if (widget.scheduledItem != null) {
+      _title = widget.scheduledItem!.title;
+      _description = widget.scheduledItem!.description;
+      _date = widget.scheduledItem!.date;
+      _timestart = TimeOfDay.fromDateTime(widget.scheduledItem!.timeStarted);
+      _cat = widget.scheduledItem!.category;
+      _remind = widget.scheduledItem!.timeReminded == null
+          ? "None"
+          : widget.scheduledItem!.timeReminded!
+                      .difference(widget.scheduledItem!.timeStarted)
+                      .inMinutes ==
+                  -5
+              ? "5 minutes before"
+              : widget.scheduledItem!.timeReminded!
+                          .difference(widget.scheduledItem!.timeStarted)
+                          .inMinutes ==
+                      -15
+                  ? "15 minutes before"
+                  : widget.scheduledItem!.timeReminded!
+                              .difference(widget.scheduledItem!.timeStarted)
+                              .inMinutes ==
+                          -30
+                      ? "30 minutes before"
+                      : "None";
+    }
+  }
+
+  Future<void> selectDate(dateController) async {
+    DateTime? datepicked = await showDatePicker(
+        context: context,
+        initialDate: _date,
+        firstDate: DateTime.now(),
+        lastDate: DateTime.now().add(const Duration(days: 365)));
+    if (datepicked != null) {
+      setState(() {
+        _date = datepicked;
+        dateController.text = DateFormat.yMMMMd().format(datepicked);
+      });
+    }
+  }
+
+  Future<void> displayTimePicker(BuildContext context, timeController) async {
+    var time = await showTimePicker(context: context, initialTime: _timestart);
+
+    if (time != null) {
+      setState(() {
+        _timestart = time;
+        timeController.text = _timestart.format(context);
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    String _title = '';
-    // ignore: no_leading_underscores_for_local_identifiers
-    String _description = '';
-    // ignore: unused_local_variable, no_leading_underscores_for_local_identifiers
-    DateTime _date = DateTime.now();
-    // ignore: unused_local_variable, no_leading_underscores_for_local_identifiers
-    TimeOfDay _timestart = TimeOfDay.now();
-    // ignore: unused_local_variable, no_leading_underscores_for_local_identifiers
-    TimeOfDay _timeend = TimeOfDay.now();
-    // ignore: unused_local_variable, no_leading_underscores_for_local_identifiers
-    String _cat = '';
-    // ignore: unused_local_variable, no_leading_underscores_for_local_identifiers
-    String _remind = '';
-    // ignore: no_leading_underscores_for_local_identifiers
-    final List<String> _catList = [
+    final List<String> catList = [
       "Work",
       "Study",
       "Life",
       "Personal",
       "Other",
     ];
-    // ignore: no_leading_underscores_for_local_identifiers
-    final List<String> _reminder = [
+    final List<String> reminder = [
       "None",
       "5 minutes before",
       "15 minutes before",
       "30 minutes before",
     ];
-    // ignore: no_leading_underscores_for_local_identifiers
-    TextEditingController _dateController = TextEditingController(
-      text: DateFormat.yMMMMd().format(DateTime.now()),
+    TextEditingController dateController = TextEditingController(
+      text: DateFormat.yMMMMd().format(_date),
     );
-    // ignore: no_leading_underscores_for_local_identifiers
-    TextEditingController _timeStartController = TextEditingController(
-      text: TimeOfDay.now().format(context),
+    TextEditingController timeStartController = TextEditingController(
+      text: _timestart.format(context),
     );
-    // ignore: no_leading_underscores_for_local_identifiers
-    TextEditingController _timeEndController = TextEditingController();
-    Future<void> selectDate() async {
-      DateTime? datepicked = await showDatePicker(
-          context: context,
-          initialDate: DateTime.now(),
-          firstDate: DateTime.now(),
-          lastDate: DateTime.now().add(const Duration(days: 365)));
-      if (datepicked != null) {
-        setState(() {
-          _date = datepicked;
-        });
-        _dateController.text = DateFormat.yMMMMd().format(datepicked);
-      }
-    }
 
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
@@ -83,7 +114,7 @@ class EditScheduledState extends State<EditScheduled> {
             child: Column(
               children: [
                 Text(
-                  widget.title,
+                  widget.scheduledItem == null ? "Add Task" : "Edit Task",
                   style: GoogleFonts.poppins(
                     textStyle: const TextStyle(
                       fontSize: 25,
@@ -105,7 +136,7 @@ class EditScheduledState extends State<EditScheduled> {
                     }
                     return null;
                   },
-                  initialValue: _description,
+                  initialValue: _title,
                   decoration: const InputDecoration(
                     contentPadding:
                         EdgeInsets.symmetric(vertical: 10, horizontal: 10),
@@ -126,7 +157,7 @@ class EditScheduledState extends State<EditScheduled> {
                       _description = value!;
                     });
                   },
-                  initialValue: _title,
+                  initialValue: _description,
                   decoration: const InputDecoration(
                     labelText: "Description",
                     hintText: "Enter the description",
@@ -147,14 +178,13 @@ class EditScheduledState extends State<EditScheduled> {
                   ),
                   width: MediaQuery.of(context).size.width - 40,
                   label: const Text("Category"),
-                  initialSelection:
-                      widget.title == "Edit Task" ? null : _catList.first,
+                  initialSelection: _cat,
                   onSelected: (String? value) {
                     setState(() {
                       _cat = value!;
                     });
                   },
-                  dropdownMenuEntries: _catList
+                  dropdownMenuEntries: catList
                       .map((e) => DropdownMenuEntry<String>(
                             value: e,
                             label: e,
@@ -177,7 +207,7 @@ class EditScheduledState extends State<EditScheduled> {
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
-                  controller: _dateController,
+                  controller: dateController,
                   validator: (String? value) {
                     if (value == null || value.isEmpty) {
                       return "Date shouldn't be empty!";
@@ -195,58 +225,31 @@ class EditScheduledState extends State<EditScheduled> {
                   ),
                   readOnly: true,
                   onTap: () {
-                    selectDate();
+                    selectDate(dateController);
                   },
                 ),
                 const SizedBox(height: 10),
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextFormField(
-                        controller: _timeStartController,
-                        validator: (String? value) {
-                          if (value == null || value.isEmpty) {
-                            return "Start time shouldn't be empty!";
-                          }
-                          return null;
-                        },
-                        decoration: const InputDecoration(
-                          contentPadding: EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 10),
-                          labelText: "Start Time",
-                          prefixIcon: Icon(Icons.access_time),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                          ),
-                        ),
-                        readOnly: true,
-                        onTap: () {},
-                      ),
+                TextFormField(
+                  controller: timeStartController,
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return "Time shouldn't be empty!";
+                    }
+                    return null;
+                  },
+                  decoration: const InputDecoration(
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                    labelText: "Time",
+                    prefixIcon: Icon(Icons.access_time),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
                     ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: TextFormField(
-                        controller: _timeEndController,
-                        validator: (String? value) {
-                          if (value == null || value.isEmpty) {
-                            return "End time shouldn't be empty!";
-                          }
-                          return null;
-                        },
-                        decoration: const InputDecoration(
-                          contentPadding: EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 10),
-                          labelText: "End Time",
-                          prefixIcon: Icon(Icons.access_time),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                          ),
-                        ),
-                        readOnly: true,
-                        onTap: () {},
-                      ),
-                    )
-                  ],
+                  ),
+                  readOnly: true,
+                  onTap: () {
+                    displayTimePicker(context, timeStartController);
+                  },
                 ),
                 const SizedBox(height: 10),
                 DropdownMenu<String>(
@@ -259,16 +262,16 @@ class EditScheduledState extends State<EditScheduled> {
                   ),
                   width: MediaQuery.of(context).size.width - 40,
                   label: const Text("Reminder"),
-                  initialSelection: _reminder.first,
+                  initialSelection: _remind,
                   leadingIcon: const Icon(
                     Icons.notifications_active,
                   ),
                   onSelected: (String? value) {
                     setState(() {
-                      _remind = value!.split(" ").first;
+                      _remind = value!;
                     });
                   },
-                  dropdownMenuEntries: _reminder
+                  dropdownMenuEntries: reminder
                       .map((e) => DropdownMenuEntry<String>(
                             value: e,
                             label: e,
@@ -289,11 +292,68 @@ class EditScheduledState extends State<EditScheduled> {
                             const Color.fromARGB(255, 2, 196, 124)),
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text("Task has been saved!"),
+                        ScheduledItem newSchedule = ScheduledItem(
+                          title: _title,
+                          description: _description,
+                          date: DateTime(_date.year, _date.month, _date.day),
+                          timeStarted: DateTime(
+                            _date.year,
+                            _date.month,
+                            _date.day,
+                            _timestart.hour,
+                            _timestart.minute,
                           ),
+                          category: _cat,
+                          timeReminded: _remind == "None"
+                              ? null
+                              : _remind == "5 minutes before"
+                                  ? DateTime(
+                                      _date.year,
+                                      _date.month,
+                                      _date.day,
+                                      _timestart.hour,
+                                      _timestart.minute - 5,
+                                    )
+                                  : _remind == "15 minutes before"
+                                      ? DateTime(
+                                          _date.year,
+                                          _date.month,
+                                          _date.day,
+                                          _timestart.hour,
+                                          _timestart.minute - 15,
+                                        )
+                                      : _remind == "30 minutes before"
+                                          ? DateTime(
+                                              _date.year,
+                                              _date.month,
+                                              _date.day,
+                                              _timestart.hour,
+                                              _timestart.minute - 30,
+                                            )
+                                          : null,
+                          isDone: false,
                         );
+
+                        if (widget.scheduledItem != null) {
+                          _scheduledData.updateScheduled(
+                              widget.scheduledItem!, newSchedule);
+                          _scheduledData.updateData();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Task has been updated!"),
+                            ),
+                          );
+                          Navigator.pop(context, newSchedule);
+                        } else {
+                          _scheduledData.addScheduled(newSchedule);
+                          _scheduledData.updateData();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Task has been saved!"),
+                            ),
+                          );
+                          Navigator.pop(context);
+                        }
                       }
                     },
                     child: const Text('Save',
