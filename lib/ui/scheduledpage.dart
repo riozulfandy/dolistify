@@ -126,7 +126,6 @@ class ScheduledPageState extends State<ScheduledPage> {
                   }
                 }).toList() ??
                 [];
-        ;
       });
     }
   }
