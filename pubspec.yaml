@@ -37,7 +37,7 @@ dependencies:
   hive:
   hive_flutter:
   flutter_slidable:
-  fl_chart:
+  fl_chart: ^0.66.2
 
 
   # The following adds the Cupertino Icons font to your application.
