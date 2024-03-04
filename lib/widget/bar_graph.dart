@@ -1,257 +1,105 @@
-import 'dart:math';
-
-import 'package:dolistify/data/scheduled_data.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-class _BarChart extends StatelessWidget {
-  final int maxTaskOnDay;
-  final List doneTaskOnDay;
-  const _BarChart(this.maxTaskOnDay, this.doneTaskOnDay);
+class MyBarChart extends StatelessWidget {
+  final List<double> data;
+  final int maxData;
+  const MyBarChart({super.key, required this.data, required this.maxData});
 
   @override
   Widget build(BuildContext context) {
     return BarChart(
       BarChartData(
-        barTouchData: barTouchData,
-        titlesData: titlesData,
-        borderData: borderData,
-        barGroups: barGroups,
+        maxY: maxData.toDouble() > 10 ? maxData.toDouble() : 10,
         gridData: const FlGridData(show: false),
-        alignment: BarChartAlignment.spaceAround,
-        maxY: maxTaskOnDay > 10 ? maxTaskOnDay.toDouble() + 2 : 12,
+        borderData: FlBorderData(show: false),
+        titlesData: FlTitlesData(
+          show: true,
+          leftTitles:
+              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          rightTitles:
+              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          topTitles:
+              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          bottomTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              getTitlesWidget: getTitles,
+            ),
+          ),
+        ),
+        barGroups: data
+            .asMap()
+            .entries
+            .map((e) => BarChartGroupData(
+                  x: e.key,
+                  barRods: [
+                    BarChartRodData(
+                      toY: e.value,
+                      color: Colors.white,
+                      width: 20,
+                      borderRadius: const BorderRadius.all(Radius.circular(6)),
+                      backDrawRodData: BackgroundBarChartRodData(
+                        show: true,
+                        toY: maxData.toDouble() > 10 ? maxData.toDouble() : 10,
+                        color: Colors.grey.shade700,
+                      ),
+                    ),
+                  ],
+                ))
+            .toList(),
       ),
     );
   }
 
-  BarTouchData get barTouchData => BarTouchData(
-        enabled: false,
-        touchTooltipData: BarTouchTooltipData(
-          tooltipBgColor: Colors.transparent,
-          tooltipPadding: EdgeInsets.zero,
-          tooltipMargin: 8,
-          getTooltipItem: (
-            BarChartGroupData group,
-            int groupIndex,
-            BarChartRodData rod,
-            int rodIndex,
-          ) {
-            return BarTooltipItem(
-              rod.toY.round().toString(),
-              const TextStyle(
-                color: Colors.white,
-              ),
-            );
-          },
-        ),
-      );
-
-  Widget getTitles(double value, TitleMeta meta) {
-    const style = TextStyle(
-      color: Colors.white,
-      fontSize: 14,
+  Widget getTitles(double value, TitleMeta titleMeta) {
+    TextStyle style = GoogleFonts.poppins(
+      textStyle: const TextStyle(
+        fontSize: 12,
+        color: Colors.white,
+      ),
     );
-    String text;
+    TextStyle styleCurrent = GoogleFonts.poppins(
+      textStyle: const TextStyle(
+        fontSize: 13,
+        fontWeight: FontWeight.w800,
+        color: Color.fromARGB(255, 124, 245, 154),
+      ),
+    );
     switch (value.toInt()) {
       case 0:
-        text = 'Sun';
-        break;
+        return Text('SUN',
+            style:
+                value.toInt() == DateTime.now().weekday ? styleCurrent : style);
       case 1:
-        text = 'Mon';
-        break;
+        return Text('MON',
+            style:
+                value.toInt() == DateTime.now().weekday ? styleCurrent : style);
       case 2:
-        text = 'Tue';
-        break;
+        return Text('TUE',
+            style:
+                value.toInt() == DateTime.now().weekday ? styleCurrent : style);
       case 3:
-        text = 'Wed';
-        break;
+        return Text('WED',
+            style:
+                value.toInt() == DateTime.now().weekday ? styleCurrent : style);
       case 4:
-        text = 'Thu';
-        break;
+        return Text('THU',
+            style:
+                value.toInt() == DateTime.now().weekday ? styleCurrent : style);
       case 5:
-        text = 'Fri';
-        break;
+        return Text('FRI',
+            style:
+                value.toInt() == DateTime.now().weekday ? styleCurrent : style);
       case 6:
-        text = 'Sat';
-        break;
+        return Text('SAT',
+            style:
+                value.toInt() == DateTime.now().weekday ? styleCurrent : style);
       default:
-        text = '';
-        break;
+        return Text('',
+            style:
+                value.toInt() == DateTime.now().weekday ? styleCurrent : style);
     }
-    return SideTitleWidget(
-      axisSide: meta.axisSide,
-      space: 4,
-      child: Text(text, style: style),
-    );
-  }
-
-  FlTitlesData get titlesData => FlTitlesData(
-        show: true,
-        bottomTitles: AxisTitles(
-          sideTitles: SideTitles(
-            showTitles: true,
-            reservedSize: 30,
-            getTitlesWidget: getTitles,
-          ),
-        ),
-        leftTitles: const AxisTitles(
-          sideTitles: SideTitles(showTitles: false),
-        ),
-        topTitles: const AxisTitles(
-          sideTitles: SideTitles(showTitles: false),
-        ),
-        rightTitles: const AxisTitles(
-          sideTitles: SideTitles(showTitles: false),
-        ),
-      );
-
-  FlBorderData get borderData => FlBorderData(
-        show: false,
-      );
-
-  List<BarChartGroupData> get barGroups => [
-        BarChartGroupData(
-          x: 0,
-          barRods: [
-            BarChartRodData(
-              toY: doneTaskOnDay[0],
-              color: Colors.white,
-            )
-          ],
-          showingTooltipIndicators: [0],
-        ),
-        BarChartGroupData(
-          x: 1,
-          barRods: [
-            BarChartRodData(
-              toY: doneTaskOnDay[1],
-              color: Colors.white,
-            )
-          ],
-          showingTooltipIndicators: [0],
-        ),
-        BarChartGroupData(
-          x: 2,
-          barRods: [
-            BarChartRodData(
-              toY: doneTaskOnDay[2],
-              color: Colors.white,
-            )
-          ],
-          showingTooltipIndicators: [0],
-        ),
-        BarChartGroupData(
-          x: 3,
-          barRods: [
-            BarChartRodData(
-              toY: doneTaskOnDay[3],
-              color: Colors.white,
-            )
-          ],
-          showingTooltipIndicators: [0],
-        ),
-        BarChartGroupData(
-          x: 4,
-          barRods: [
-            BarChartRodData(
-              toY: doneTaskOnDay[4],
-              color: Colors.white,
-            )
-          ],
-          showingTooltipIndicators: [0],
-        ),
-        BarChartGroupData(
-          x: 5,
-          barRods: [
-            BarChartRodData(
-              toY: doneTaskOnDay[5],
-              color: Colors.white,
-            )
-          ],
-          showingTooltipIndicators: [0],
-        ),
-        BarChartGroupData(
-          x: 6,
-          barRods: [
-            BarChartRodData(
-              toY: doneTaskOnDay[6],
-              color: Colors.white,
-            )
-          ],
-          showingTooltipIndicators: [0],
-        ),
-      ];
-}
-
-class BarChartSample3 extends StatefulWidget {
-  const BarChartSample3({super.key});
-
-  @override
-  State<StatefulWidget> createState() => BarChartSample3State();
-}
-
-class BarChartSample3State extends State<BarChartSample3> {
-  final ScheduledData _scheduledData = ScheduledData();
-  final _box = Hive.box('myBox');
-  List doneTaskOnDay = [0, 0, 0, 0, 0, 0, 0];
-  int maxTaskOnDay = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    if (_box.get('scheduledOnDate') == null) {
-      _scheduledData.initialData();
-      _scheduledData.updateData();
-    } else {
-      _scheduledData.loadData();
-    }
-    updateData();
-  }
-
-  DateTime getSunday() {
-    final DateTime sunday =
-        DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
-    while (sunday.weekday != DateTime.sunday) {
-      sunday.add(const Duration(days: -1));
-    }
-    return sunday;
-  }
-
-  int taskCount(DateTime date) {
-    return _scheduledData.scheduledOnDate[date] == null
-        ? 0
-        : _scheduledData.scheduledOnDate[date]!.length;
-  }
-
-  int doneTaskCount(DateTime date) {
-    return _scheduledData.scheduledOnDate[date] == null
-        ? 0
-        : _scheduledData.scheduledOnDate[date]!
-            .where((element) => element.isDone)
-            .length;
-  }
-
-  void updateData() {
-    DateTime date = getSunday();
-    int i = 0;
-    doneTaskOnDay[i] = doneTaskCount(date);
-    maxTaskOnDay = taskCount(date);
-    while (date !=
-        DateTime(
-            DateTime.now().year, DateTime.now().month, DateTime.now().day)) {
-      i++;
-      date = date.add(const Duration(days: 1));
-      doneTaskOnDay[i] = doneTaskCount(date);
-      maxTaskOnDay = max(maxTaskOnDay, taskCount(date));
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: 1.6,
-      child: _BarChart(maxTaskOnDay, doneTaskOnDay),
-    );
   }
 }

@@ -1,9 +1,12 @@
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:dolistify/data/profile_data.dart';
+import 'package:dolistify/data/scheduled_data.dart';
 import 'package:dolistify/widget/bar_graph.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -24,15 +27,65 @@ class ProfilePageState extends State<ProfilePage> {
   String _gender = "";
   DateTime? _birthdate;
   Uint8List? _profileImage;
+  final ScheduledData _scheduledData = ScheduledData();
+  final _box = Hive.box('myBox');
+  List<double> doneTaskOnDay = [0, 0, 0, 0, 0, 0, 0];
+  int maxTaskOnDay = 0;
+
   @override
   void initState() {
     super.initState();
+    if (_box.get('scheduledOnDate') == null) {
+      _scheduledData.initialData();
+      _scheduledData.updateData();
+    } else {
+      _scheduledData.loadData();
+    }
+    updateData();
     profile.loadData();
     _name = profile.profileData["name"];
     _email = profile.profileData["email"];
     _gender = profile.profileData["gender"];
     _birthdate = profile.profileData["birthdate"];
     _profileImage = profile.profileData["profilepicture"];
+  }
+
+  DateTime getSunday() {
+    DateTime sunday =
+        DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+    while (sunday.weekday != DateTime.sunday) {
+      sunday = sunday.add(const Duration(days: -1));
+    }
+    return sunday;
+  }
+
+  int taskCount(DateTime date) {
+    return _scheduledData.scheduledOnDate[date] == null
+        ? 0
+        : _scheduledData.scheduledOnDate[date]!.length;
+  }
+
+  int doneTaskCount(DateTime date) {
+    return _scheduledData.scheduledOnDate[date] == null
+        ? 0
+        : _scheduledData.scheduledOnDate[date]!
+            .where((element) => element.isDone)
+            .length;
+  }
+
+  void updateData() {
+    DateTime date = getSunday();
+    int i = 0;
+    doneTaskOnDay[i] = doneTaskCount(date).toDouble();
+    maxTaskOnDay = taskCount(date);
+    while (date !=
+        DateTime(
+            DateTime.now().year, DateTime.now().month, DateTime.now().day)) {
+      i++;
+      date = date.add(const Duration(days: 1));
+      doneTaskOnDay[i] = doneTaskCount(date).toDouble();
+      maxTaskOnDay = max(maxTaskOnDay, taskCount(date));
+    }
   }
 
   @override
@@ -155,17 +208,12 @@ class ProfilePageState extends State<ProfilePage> {
                           ),
                         ),
                       ),
-                      Text(
-                        'Today: ${DateFormat.EEEE().format(DateTime.now())}',
-                        style: GoogleFonts.robotoSlab(
-                          textStyle: const TextStyle(
-                            fontSize: 12,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      const BarChartSample3(),
+                      const SizedBox(height: 7),
+                      SizedBox(
+                        height: 200,
+                        child: MyBarChart(
+                            maxData: maxTaskOnDay, data: doneTaskOnDay),
+                      )
                     ],
                   ),
                 ),
