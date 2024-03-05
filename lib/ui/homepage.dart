@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:dolistify/data/profile_data.dart';
 import 'package:dolistify/data/scheduled_data.dart';
 import 'package:dolistify/data/scheduled_model.dart';
@@ -25,6 +26,76 @@ class HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    AwesomeNotifications().isNotificationAllowed().then((value) => {
+          if (!value)
+            {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  backgroundColor: Colors.grey.shade50,
+                  surfaceTintColor: Colors.grey.shade50,
+                  title: Text(
+                    'Allow Notifications',
+                    style: GoogleFonts.robotoSlab(
+                      textStyle: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black),
+                    ),
+                  ),
+                  content: Text(
+                    'This app would like to send notifications',
+                    style: GoogleFonts.poppins(
+                      textStyle:
+                          const TextStyle(fontSize: 12, color: Colors.black),
+                    ),
+                  ),
+                  actions: <Widget>[
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        backgroundColor: Colors.red,
+                      ),
+                      child: const Text(
+                        'Don\'t Allow',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        AwesomeNotifications()
+                            .requestPermissionToSendNotifications()
+                            .then((_) => Navigator.of(context).pop());
+                      },
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        backgroundColor: const Color.fromARGB(255, 2, 196, 124),
+                      ),
+                      child: const Text(
+                        'Allow',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ],
+                  actionsPadding: const EdgeInsets.only(right: 20, bottom: 20),
+                ),
+              )
+            }
+        });
+
     if (_box.get('todoList') == null) {
       toDoData.initialData();
       toDoData.updateData();
