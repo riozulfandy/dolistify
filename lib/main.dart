@@ -1,12 +1,16 @@
 import 'package:dolistify/ui/splashscreen.dart';
+import 'package:dolistify/services/local_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 main() async {
   await Hive.initFlutter();
   await Hive.openBox('myBox');
   WidgetsFlutterBinding.ensureInitialized();
+  tz.initializeTimeZones();
+  await LocalNotification.init();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((value) => runApp(const MyApp()));
 }
