@@ -114,7 +114,18 @@ class ScheduledPageState extends State<ScheduledPage> {
     if (datepicked != null) {
       setState(() {
         _selectedDate = datepicked;
-        _scheduledOnDate = scheduledData.scheduledOnDate[_selectedDate] ?? [];
+        _scheduledOnDate =
+            scheduledData.scheduledOnDate[_selectedDate]?.where((element) {
+                  var title = element.title.toLowerCase();
+                  var category = element.category;
+                  if (_selectedCategory == "All") {
+                    return title.contains(_searchText);
+                  } else {
+                    return title.contains(_searchText) &&
+                        category == _selectedCategory;
+                  }
+                }).toList() ??
+                [];
       });
     }
   }
@@ -140,7 +151,7 @@ class ScheduledPageState extends State<ScheduledPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    DateFormat.yMMMMd().format(DateTime.now()),
+                    DateFormat.yMMMMEEEEd().format(DateTime.now()),
                     style: const TextStyle(
                       color: Color.fromARGB(255, 117, 117, 117),
                       fontWeight: FontWeight.bold,
@@ -278,17 +289,18 @@ class ScheduledPageState extends State<ScheduledPage> {
                     setState(() {
                       _searchText = text;
                       _scheduledOnDate = scheduledData
-                          .scheduledOnDate[_selectedDate]!
-                          .where((element) {
-                        var title = element.title.toLowerCase();
-                        var category = element.category;
-                        if (_selectedCategory == "All") {
-                          return title.contains(_searchText);
-                        } else {
-                          return title.contains(_searchText) &&
-                              category == _selectedCategory;
-                        }
-                      }).toList();
+                              .scheduledOnDate[_selectedDate]
+                              ?.where((element) {
+                            var title = element.title.toLowerCase();
+                            var category = element.category;
+                            if (_selectedCategory == "All") {
+                              return title.contains(_searchText);
+                            } else {
+                              return title.contains(_searchText) &&
+                                  category == _selectedCategory;
+                            }
+                          }).toList() ??
+                          [];
                     });
                   },
                   style: const TextStyle(

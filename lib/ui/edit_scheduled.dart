@@ -189,16 +189,16 @@ class EditScheduledState extends State<EditScheduled> {
                             value: e,
                             label: e,
                             leadingIcon: switch (e) {
-                              "Work" => const Icon(Icons.work,
-                                  color: Color.fromARGB(255, 2, 196, 124)),
-                              "Study" => const Icon(Icons.book,
-                                  color: Color.fromARGB(255, 2, 196, 124)),
-                              "Life" => const Icon(Icons.favorite,
-                                  color: Color.fromARGB(255, 2, 196, 124)),
-                              "Personal" => const Icon(Icons.person,
-                                  color: Color.fromARGB(255, 2, 196, 124)),
+                              "Work" =>
+                                const Icon(Icons.work, color: Colors.black),
+                              "Study" =>
+                                const Icon(Icons.book, color: Colors.black),
+                              "Life" =>
+                                const Icon(Icons.favorite, color: Colors.black),
+                              "Personal" =>
+                                const Icon(Icons.person, color: Colors.black),
                               "Other" => const Icon(Icons.more_horiz,
-                                  color: Color.fromARGB(255, 2, 196, 124)),
+                                  color: Colors.black),
                               String() => null,
                             },
                           ))

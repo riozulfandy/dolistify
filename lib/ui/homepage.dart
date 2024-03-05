@@ -161,7 +161,7 @@ class HomePageState extends State<HomePage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            DateFormat.yMMMMd().format(DateTime.now()),
+            DateFormat.yMMMMEEEEd().format(DateTime.now()),
             style: const TextStyle(
               color: Color.fromARGB(255, 117, 117, 117),
               fontWeight: FontWeight.bold,
