@@ -1,5 +1,5 @@
 # DoListify 📝🎯✅📋
-Ristek Mobile Development Open Recruirement 2024 Personal Task.
+Ristek Mobile Development Open Recruitment 2024 Personal Task.
 
 <p align="center">
   <img src="./assets/images/splash.png" alt="DoListify icon" width="200"/>
@@ -9,21 +9,17 @@ Ristek Mobile Development Open Recruirement 2024 Personal Task.
 DoListify is a mobile application created with the Flutter framework. This app serves as a task and activity management tool, offering various features to support daily productivity. The app's data is integrated with a local database using the Hive package for efficient management.
 
 ### 1. Quick ToDo & Home Page:
-<img src="./assets/images/docs/homepage2.jpg" alt="Homepage1" width="200"/>
-<img src="./assets/images/docs/homepage1.jpg" alt="Homepage2" width="200"/>
+<img src="./assets/images/docs/homepage2.jpg" alt="Homepage1" width="200"/> <img src="./assets/images/docs/homepage1.jpg" alt="Homepage2" width="200"/>
 
 This feature allows users to swiftly create ToDo lists for activities they plan to undertake. There also reminder in Homepage for next scheduled task on today.
 
 ### 2. Scheduled Task:
-<img src="./assets/images/docs/schedule1.jpg" alt="Schedule1" width="180"/>
-<img src="./assets/images/docs/schedule2.jpg" alt="Schedule2" width="180"/>
-<img src="./assets/images/docs/schedule3.jpg" alt="Schedule3" width="180"/>
+<img src="./assets/images/docs/schedule1.jpg" alt="Schedule1" width="180"/> <img src="./assets/images/docs/schedule2.jpg" alt="Schedule2" width="180"/> <img src="./assets/images/docs/schedule3.jpg" alt="Schedule3" width="180"/>
 
 Users can record tasks to be completed at specific times. These tasks can be added, edited, and deleted. Additionally, a notification feature is currently under development.
 
 ### 3. Profile & Weekly Progress:
-<img src="./assets/images/docs/profile1.jpg" alt="Profile1" width="200"/>
-<img src="./assets/images/docs/profile2.jpg" alt="Profile2" width="200"/>
+<img src="./assets/images/docs/profile1.jpg" alt="Profile1" width="200"/> <img src="./assets/images/docs/profile2.jpg" alt="Profile2" width="200"/>
 
 Users can create profiles within the app, displaying their weekly progress in task completion on the profile page. This feature provides insights into personal achievements and ongoing tasks throughout the week.
 
