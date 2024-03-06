@@ -10,14 +10,19 @@ Future<void> createScheduledNotification(
           criticalAlert: true,
           body: body,
           wakeUpScreen: true,
-          category: NotificationCategory.Reminder,
-          autoDismissible: false,
+          autoDismissible: true,
           notificationLayout: NotificationLayout.Default),
-      schedule: NotificationCalendar.fromDate(
-        date: scheduleTime,
-        allowWhileIdle: true,
-        preciseAlarm: true,
-      ));
+      schedule: NotificationCalendar(
+          day: scheduleTime.day,
+          month: scheduleTime.month,
+          year: scheduleTime.year,
+          hour: scheduleTime.hour,
+          minute: scheduleTime.minute,
+          second: 0,
+          millisecond: 0,
+          timeZone: 'Asia/Jakarta',
+          repeats: false,
+          allowWhileIdle: true));
 }
 
 Future<void> cancelNotification(int id) async {

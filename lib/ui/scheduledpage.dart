@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:dolistify/services/notification.dart';
 
 class ScheduledPage extends StatefulWidget {
   const ScheduledPage({Key? key}) : super(key: key);
@@ -99,6 +100,12 @@ class ScheduledPageState extends State<ScheduledPage> {
 
   void deleteTask(int index, DateTime date) {
     setState(() {
+      ScheduledItem task = scheduledData.scheduledOnDate[date]![index];
+      cancelNotification(int.parse(task.timeReminded!.day.toString() +
+          task.timeReminded!.month.toString() +
+          task.timeReminded!.year.toString() +
+          task.timeReminded!.hour.toString() +
+          task.timeReminded!.minute.toString()));
       scheduledData.scheduledOnDate[date]!.removeAt(index);
       _scheduledOnDate = scheduledData.scheduledOnDate[date] ?? [];
     });
