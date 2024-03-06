@@ -1,5 +1,6 @@
 import 'package:dolistify/data/scheduled_data.dart';
 import 'package:dolistify/data/scheduled_model.dart';
+import 'package:dolistify/services/notification.dart';
 import 'package:dolistify/widget/appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -335,6 +336,33 @@ class EditScheduledState extends State<EditScheduled> {
                         );
 
                         if (widget.scheduledItem != null) {
+                          if (widget.scheduledItem!.timeReminded != null) {
+                            cancelNotification(int.parse(
+                              widget.scheduledItem!.timeReminded!.day
+                                      .toString() +
+                                  widget.scheduledItem!.timeReminded!.month
+                                      .toString() +
+                                  widget.scheduledItem!.timeReminded!.year
+                                      .toString() +
+                                  widget.scheduledItem!.timeReminded!.hour
+                                      .toString() +
+                                  widget.scheduledItem!.timeReminded!.minute
+                                      .toString(),
+                            ));
+                          }
+                          if (newSchedule.timeReminded != null) {
+                            createScheduledNotification(
+                              int.parse(newSchedule.timeReminded!.day
+                                      .toString() +
+                                  newSchedule.timeReminded!.month.toString() +
+                                  newSchedule.timeReminded!.year.toString() +
+                                  newSchedule.timeReminded!.hour.toString() +
+                                  newSchedule.timeReminded!.minute.toString()),
+                              newSchedule.title,
+                              "You Have Schedule on ${DateFormat.Hm().format(newSchedule.timeReminded!)}",
+                              newSchedule.timeReminded!,
+                            );
+                          }
                           _scheduledData.updateScheduled(
                               widget.scheduledItem!, newSchedule);
                           _scheduledData.updateData();
@@ -345,6 +373,19 @@ class EditScheduledState extends State<EditScheduled> {
                           );
                           Navigator.pop(context, newSchedule);
                         } else {
+                          if (newSchedule.timeReminded != null) {
+                            createScheduledNotification(
+                              int.parse(newSchedule.timeReminded!.day
+                                      .toString() +
+                                  newSchedule.timeReminded!.month.toString() +
+                                  newSchedule.timeReminded!.year.toString() +
+                                  newSchedule.timeReminded!.hour.toString() +
+                                  newSchedule.timeReminded!.minute.toString()),
+                              newSchedule.title,
+                              "You Have Schedule on ${DateFormat.Hm().format(newSchedule.timeReminded!)}",
+                              newSchedule.timeReminded!,
+                            );
+                          }
                           _scheduledData.addScheduled(newSchedule);
                           _scheduledData.updateData();
                           ScaffoldMessenger.of(context).showSnackBar(
