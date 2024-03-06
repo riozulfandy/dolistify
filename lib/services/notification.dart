@@ -7,13 +7,17 @@ Future<void> createScheduledNotification(
           id: id,
           channelKey: 'scheduled_notifications',
           title: title,
+          criticalAlert: true,
           body: body,
           wakeUpScreen: true,
           category: NotificationCategory.Reminder,
           autoDismissible: false,
           notificationLayout: NotificationLayout.Default),
       schedule: NotificationCalendar.fromDate(
-          date: scheduleTime, allowWhileIdle: true));
+        date: scheduleTime,
+        allowWhileIdle: true,
+        preciseAlarm: true,
+      ));
 }
 
 Future<void> cancelNotification(int id) async {
