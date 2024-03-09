@@ -91,6 +91,26 @@ class ScheduledPageState extends State<ScheduledPage> {
 
   void checkBoxChanged(bool? value, int index, DateTime date) {
     setState(() {
+      ScheduledItem task = scheduledData.scheduledOnDate[date]![index];
+      if (task.timeReminded != null) {
+        if (task.isDone) {
+          cancelNotification(int.parse(task.timeReminded!.day.toString() +
+              task.timeReminded!.month.toString() +
+              task.timeReminded!.year.toString() +
+              task.timeReminded!.hour.toString() +
+              task.timeReminded!.minute.toString()));
+        } else {
+          createScheduledNotification(
+              int.parse(task.timeReminded!.day.toString() +
+                  task.timeReminded!.month.toString() +
+                  task.timeReminded!.year.toString() +
+                  task.timeReminded!.hour.toString() +
+                  task.timeReminded!.minute.toString()),
+              task.title,
+              task.description,
+              task.timeReminded!);
+        }
+      }
       scheduledData.scheduledOnDate[date]![index].isDone =
           !scheduledData.scheduledOnDate[date]![index].isDone;
       _scheduledOnDate = scheduledData.scheduledOnDate[date] ?? [];
@@ -101,11 +121,13 @@ class ScheduledPageState extends State<ScheduledPage> {
   void deleteTask(int index, DateTime date) {
     setState(() {
       ScheduledItem task = scheduledData.scheduledOnDate[date]![index];
-      cancelNotification(int.parse(task.timeReminded!.day.toString() +
-          task.timeReminded!.month.toString() +
-          task.timeReminded!.year.toString() +
-          task.timeReminded!.hour.toString() +
-          task.timeReminded!.minute.toString()));
+      if (task.timeReminded != null) {
+        cancelNotification(int.parse(task.timeReminded!.day.toString() +
+            task.timeReminded!.month.toString() +
+            task.timeReminded!.year.toString() +
+            task.timeReminded!.hour.toString() +
+            task.timeReminded!.minute.toString()));
+      }
       scheduledData.scheduledOnDate[date]!.removeAt(index);
       _scheduledOnDate = scheduledData.scheduledOnDate[date] ?? [];
     });

@@ -7,17 +7,21 @@ import 'package:hive_flutter/adapters.dart';
 main() async {
   await Hive.initFlutter();
   await Hive.openBox('myBox');
-  AwesomeNotifications().initialize(null, [
-    NotificationChannel(
-      channelKey: "scheduled_notifications",
-      channelName: "Scheduled Notifications",
-      channelDescription: "Scheduled Notifications Channel",
-      defaultColor: const Color.fromARGB(255, 2, 196, 124),
-      importance: NotificationImportance.High,
-      channelShowBadge: true,
-      criticalAlerts: true,
-    )
-  ]);
+  AwesomeNotifications().initialize(
+    'resource://drawable/notificon',
+    [
+      NotificationChannel(
+        icon: 'resource://drawable/notificon',
+        channelKey: "scheduled_notifications",
+        channelName: "Scheduled Notifications",
+        channelDescription: "Scheduled Notifications Channel",
+        defaultColor: const Color.fromARGB(255, 2, 196, 124),
+        importance: NotificationImportance.High,
+        channelShowBadge: true,
+        criticalAlerts: true,
+      )
+    ],
+  );
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((value) => runApp(const MyApp()));
